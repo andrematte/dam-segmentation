@@ -6,7 +6,7 @@ from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
 
-from damseg_ml.utils import logger_setup
+from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
@@ -42,16 +42,14 @@ class RandomForestModel:
             random_state=self.seed,
         )
 
-    def load_train_data(self, path: str):
-        logger.info(f"---> Loading training data: {path}")
-        dataset = pd.read_csv(path)
-        self.features = dataset.columns
+    def load_train_data(self, dataset: pd.DataFrame):
+        logger.info("---> Loading training data")
         self.y_train = dataset["label"]
         self.X_train = dataset.drop("label", axis=1)
+        self.features = self.X_train.columns
 
-    def load_test_data(self, path: str, labels: list[int]):
-        logger.info(f"---> Loading test data: {path}")
-        dataset = pd.read_csv(path)
+    def load_test_data(self, dataset: pd.DataFrame, labels: list[int]):
+        logger.info("---> Loading test data:")
         self.labels = labels
         self.y_test = dataset["label"]
         self.X_test = dataset.drop("label", axis=1)
@@ -106,7 +104,7 @@ class RandomForestModel:
     def compute_feature_importances(self, type="mdi"):
         if type == "mdi":
             self.mdi_importance = pd.Series(
-                self.model.feature_importances_, index=self.feature_names
+                self.model.feature_importances_, index=self.features
             ).sort_values(ascending=False)
             return self.mdi_importance
 
@@ -120,6 +118,6 @@ class RandomForestModel:
                 n_jobs=2,
             )
             self.perm_importance = pd.Series(
-                result.importances_mean, index=self.feature_names
+                result.importances_mean, index=self.features
             ).sort_values(ascending=False)
             return self.perm_importance

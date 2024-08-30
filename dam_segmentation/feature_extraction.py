@@ -11,7 +11,7 @@ from scipy import ndimage as nd
 from skimage.feature import graycomatrix, graycoprops
 from skimage.filters import prewitt, roberts, scharr, sobel
 
-from damseg_ml.utils import logger_setup, rgb_to_mask
+from dam_segmentation.utils import logger_setup, rgb_to_mask
 
 logger = logger_setup(to_file=False)
 

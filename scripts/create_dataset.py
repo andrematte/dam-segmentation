@@ -1,6 +1,6 @@
 import pandas as pd
 
-from damseg_ml.feature_extraction import create_dataset
+from dam_segmentation.feature_extraction import create_dataset
 
 # 1 - Create binary dataset
 # Create training dataset

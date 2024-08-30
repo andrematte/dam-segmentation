@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 
-from damseg_ml.settings import MASK_COLORS, SEGMENTATION_CLASSES
+from dam_segmentation.settings import MASK_COLORS, SEGMENTATION_CLASSES
 
 
 def logger_setup(to_file=True):
