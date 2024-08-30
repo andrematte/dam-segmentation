@@ -15,7 +15,6 @@ scipy = "^1.14.1"
 scikit-image = "^0.24.0"
 matplotlib = "^3.9.2"
 tifffile = "^2024.8.24"
-polars = "^1.6.0"
 fastparquet = "^2024.5.0"
 
 [tool.poetry.group.dev.dependencies]
