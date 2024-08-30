@@ -12,7 +12,7 @@ RUN pip install poetry==1.4.2
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
-COPY damseg_ml ./damseg_ml
+COPY dam_segmentation ./dam_segmentation
 COPY dist/ms_image_tool-0.1.0-py3-none-any.whl ./dist/ms_image_tool-0.1.0-py3-none-any.whl
 
 COPY README.md ./
