@@ -20,13 +20,19 @@ class RandomForestModel:
         self,
         n_estimators: int = 100,
         max_features: str = "sqrt",
+        max_depth: int = None,
+        max_samples: float = 1.0,
+        n_jobs: int = -1,
         seed: int = 23,
     ):
         self.id = datetime.now().strftime(f"%Y%m%d-%H%M%S-{seed}")
 
         self.seed = seed
+        self.n_jobs = n_jobs
         self.n_estimators = n_estimators
         self.max_features = max_features
+        self.max_depth = max_depth
+        self.max_samples = max_samples
 
         logger.info("-> Initializing Random Forest model")
         logger.info(
@@ -40,6 +46,9 @@ class RandomForestModel:
             n_estimators=self.n_estimators,
             max_features=self.max_features,
             random_state=self.seed,
+            n_jobs=self.n_jobs,
+            max_depth=self.max_depth,
+            max_samples=self.max_samples,
         )
 
     def load_train_data(self, dataset: pd.DataFrame):
