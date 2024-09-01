@@ -22,6 +22,7 @@ class RandomForestModel:
         max_features: str = "sqrt",
         max_depth: int = None,
         max_samples: float = 1.0,
+        label_names: list[str] = None,
         n_jobs: int = -1,
         seed: int = 23,
     ):
@@ -33,6 +34,7 @@ class RandomForestModel:
         self.max_features = max_features
         self.max_depth = max_depth
         self.max_samples = max_samples
+        self.label_names = label_names
 
         logger.info("-> Initializing Random Forest model")
         logger.info(
@@ -86,9 +88,16 @@ class RandomForestModel:
         )
         f1 = metrics.f1_score(self.y_test, self.pred_test_set, average="macro")
         kappa = metrics.cohen_kappa_score(self.y_test, self.pred_test_set)
-        report = metrics.classification_report(self.y_test, self.pred_test_set)
+        report = metrics.classification_report(
+            self.y_test,
+            self.pred_test_set,
+            output_dict=True,
+            target_names=self.label_names,
+        )
         conf_mat = metrics.confusion_matrix(
-            self.y_test, self.pred_test_set, labels=self.labels
+            self.y_test,
+            self.pred_test_set,
+            labels=self.labels,
         )
         norm_conf_mat = metrics.confusion_matrix(
             self.y_test,

@@ -15,8 +15,9 @@ from dam_segmentation.utils import logger_setup
 logger = logger_setup(to_file=False)
 
 # train_path = "../../../data/train/binary_balanced_training.parquet"
-train_path = "../../../data/train/binary_reduced_training.parquet"
 # test_path = "../../../data/test/binary_test.parquet"
+
+train_path = "../../../data/train/binary_reduced_training.parquet"
 test_path = "../../../data/test/binary_reduced_test.parquet"
 
 train_data = pd.read_parquet(train_path)
@@ -138,7 +139,10 @@ model.test_model()
 importances = model.compute_feature_importances()
 logger.info(f"-> Filtering features with importance > {IMPORTANCE_THRESHOLD}")
 importances = importances[importances > IMPORTANCE_THRESHOLD]
-importances.to_csv("feature_importances.csv")
+
+importance_df = pd.DataFrame(importances, columns=["Importance"])
+importance_df.index.name = "Feature"
+importance_df.to_csv("feature_importances.csv")
 
 ranked_features = importances.index
 
