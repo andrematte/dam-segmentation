@@ -20,10 +20,11 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-# train_path = "../../../data/train/binary_balanced_training.parquet"
-train_path = "../../../data/train/binary_reduced_training.parquet"
-# test_path = "../../../data/test/binary_test.parquet"
-test_path = "../../../data/test/binary_reduced_test.parquet"
+train_path = "../../../data/train/multiclass_balanced_training.parquet"
+test_path = "../../../data/test/multiclass_test.parquet"
+
+# train_path = "../../../data/train/multiclass_reduced_training.parquet"
+# test_path = "../../../data/test/multiclass_reduced_test.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -116,6 +117,7 @@ result_columns = [
     "kappa",
 ]
 results = pd.DataFrame(columns=result_columns)
+# results.to_csv("subsets_results_multiclass.csv", index=False)
 
 NTREES = [8, 16, 32, 64, 128, 256, 512, 1024]
 LABELS = [0, 1]
@@ -155,12 +157,15 @@ for SUBSET in SUBSETS.keys():
             "f1score": model.metrics["F1 Score"],
             "kappa": model.metrics["Kappa"],
         }
-        results = pd.concat(
-            [results, pd.DataFrame(result, index=[0]).round(4)],
-            ignore_index=True,
-        )
+        # results = pd.concat(
+        #     [results, pd.DataFrame(result, index=[0]).round(4)],
+        #     ignore_index=True,
+        # )
 
-results.to_csv(
-    "subsets_results_multiclass.csv",
-    index=False,
-)
+        results = pd.DataFrame(result, index=[0]).round(4)
+        results.to_csv(
+            "subsets_results_multiclass.csv",
+            mode="a",
+            index=False,
+            header=False,
+        )

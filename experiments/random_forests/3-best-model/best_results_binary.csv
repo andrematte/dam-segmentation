@@ -1,2 +1,0 @@
-name,nTrees,maxSamples,trainTime,accuracy,precision,recall,f1score,kappa
-CENARIO_6 - Top 15,128,1.0,0.0893,0.4867,0.6383,0.6693,0.4839,0.1795

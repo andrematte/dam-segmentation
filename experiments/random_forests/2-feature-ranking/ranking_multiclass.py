@@ -14,11 +14,11 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train/binary_balanced_training.parquet"
-test_path = "../../../data/test/binary_test.parquet"
+train_path = "../../../data/train/multiclass_balanced_training.parquet"
+test_path = "../../../data/test/multiclass_test.parquet"
 
-# train_path = "../../../data/train/binary_reduced_training.parquet"
-# test_path = "../../../data/test/binary_reduced_test.parquet"
+# train_path = "../../../data/train/multiclass_reduced_training.parquet"
+# test_path = "../../../data/test/multiclass_reduced_test.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -126,7 +126,7 @@ result_columns = [
     "kappa",
 ]
 results = pd.DataFrame(columns=result_columns)
-results.to_csv("ranking_results_binary.csv", index=False)
+results.to_csv("ranking_results_multiclass.csv", index=False)
 
 # ---------- Etapa 1: Treinar modelo em todas as features do subset ---------- #
 logger.info("-> Training model with the best subset of features")
@@ -143,7 +143,7 @@ importances = importances[importances > IMPORTANCE_THRESHOLD]
 
 importance_df = pd.DataFrame(importances, columns=["Importance"])
 importance_df.index.name = "Feature"
-importance_df.to_csv("feature_importances_binary.csv")
+importance_df.to_csv("feature_importances_multiclass.csv")
 
 ranked_features = importances.index
 
@@ -184,7 +184,7 @@ for X in range(len(ranked_features)):
 
     results = pd.DataFrame(result, index=[0]).round(4)
     results.to_csv(
-        "ranking_results_binary.csv",
+        "ranking_results_multiclass.csv",
         mode="a",
         index=False,
         header=False,
