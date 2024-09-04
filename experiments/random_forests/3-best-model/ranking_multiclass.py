@@ -26,8 +26,8 @@ test_data = pd.read_parquet(test_path)
 
 # -------------------------- Categorias de Features -------------------------- #
 
-LABELS = [0, 1]
-LABEL_NAMES = ["Background", "Vegetation", "RipRap", "Stairways", "Drainage"]
+LABELS = [0, 1, 2, 3]
+LABEL_NAMES = ["Background", "Vegetation", "Stairways", "Drainage"]
 NFEATURES = 15
 NTREES = 128
 SUBSET = "CENARIO_6"
