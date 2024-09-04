@@ -64,12 +64,11 @@ class Features:
 
         logger.info("-----> Extracting filter features")
         filter_features = extract_filter_features(self.image.get_gndvi())
-        gabor_features, _, _ = extract_gabor_features(self.image.get_gndvi())
+        # gabor_features, _, _ = extract_gabor_features(self.image.get_gndvi())
 
         df = (
-            df.join(gabor_features)
-            .join(filter_features)
-            .join(texture_features)
+            df.join(filter_features).join(texture_features)
+            # .join(gabor_features)
         )
 
         if self.label_path:
@@ -104,7 +103,7 @@ def create_dataset(image_dir: list[str], label_dir: list[str]) -> None:
         features = Features(image, label)
         list_of_dfs.append(features.features)
 
-    if len(list_of_dfs) > 1:
+    if len(list_of_dfs) > 0:
         dataset = pd.concat(list_of_dfs, ignore_index=True)
         return dataset
 

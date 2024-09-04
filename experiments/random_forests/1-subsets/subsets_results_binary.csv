@@ -1,1 +1,1 @@
-name,nTrees,maxSamples,maxDepth,maxFeatures,trainTime,accuracy,precision,recall,f1score,kappa
+name,nTrees,maxSamples,trainTime,accuracy,precision,recall,f1score,kappa

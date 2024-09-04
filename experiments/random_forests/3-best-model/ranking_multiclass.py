@@ -27,7 +27,7 @@ test_data = pd.read_parquet(test_path)
 # -------------------------- Categorias de Features -------------------------- #
 
 LABELS = [0, 1]
-LABEL_NAMES = ["NotVegetation", "Vegetation"]
+LABEL_NAMES = ["Background", "Vegetation", "RipRap", "Stairways", "Drainage"]
 NFEATURES = 15
 NTREES = 128
 SUBSET = "CENARIO_6"
@@ -89,6 +89,6 @@ confmat_norm = pd.DataFrame(
 )
 report = pd.DataFrame(model.metrics["Report"]).transpose()
 
-confmat.to_csv("confusion_matrix_binary.csv")
-confmat_norm.to_csv("normalized_confusion_matrix_binary.csv")
-report.to_csv("classification_report_binary.csv")
+confmat.to_csv("confusion_matrix_multiclass.csv")
+confmat_norm.to_csv("normalized_confusion_matrix_multiclass.csv")
+report.to_csv("classification_report_multiclass.csv")

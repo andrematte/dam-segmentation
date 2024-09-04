@@ -1,20 +1,23 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 from dam_segmentation.feature_extraction import create_dataset
 
-# 1 - Create binary dataset
-# Create training dataset
-train_images = "data/train/images/"
-train_labels = "data/train/labels_binary/"
-train_output = "data/train/binary_training.csv"
-dataset = create_dataset(train_images, train_labels)
-dataset.to_csv(train_output, index=False)
+# Create full dataset
+images = "/Users/andrematte/Data/nesa-dataset/images"
+labels = "/Users/andrematte/Data/nesa-dataset/mask_multiclass"
 
+dataset = create_dataset(images, labels)
 
-# Create test dataset
-test_images = "data/test/images/"
-test_labels = "data/test/labels_binary/"
-test_output = "data/test/binary_test.csv"
-dataset = create_dataset(test_images, test_labels)
-dataset.to_csv(test_output, index=False)
-dataset.to_csv(test_output, index=False)
+train, test = train_test_split(
+    dataset, test_size=0.2, random_state=42, stratify="label"
+)
+
+train.to_parquet(
+    "/Users/andrematte/Developer/Projects/phd/dam_segmentation/data/train/train_data.parquet",
+    index=False,
+)
+test.to_parquet(
+    "/Users/andrematte/Developer/Projects/phd/dam_segmentation/data/test/test_data.parquet",
+    index=False,
+)
