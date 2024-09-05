@@ -15,7 +15,7 @@ from dam_segmentation.utils import logger_setup
 logger = logger_setup(to_file=False)
 
 train_path = "../../../data/train/multiclass_balanced_training.parquet"
-test_path = "../../../data/test/multiclass_test.parquet"
+test_path = "../../../data/test/multiclass_balanced_test.parquet"
 
 # train_path = "../../../data/train/multiclass_reduced_training.parquet"
 # test_path = "../../../data/test/multiclass_reduced_test.parquet"
@@ -52,14 +52,12 @@ FILTERS = [
 LABELS = [0, 1, 2, 3]
 SUBSETS = {
     "SUBSET_1": RGB,
-    "SUBSET_2": RGB + MSPEC,
-    "SUBSET_3": RGB + MSPEC + VINDEX,
-    "SUBSET_4": RGB + FILTERS + GLCM,
-    "SUBSET_5": RGB + MSPEC + FILTERS + GLCM,
-    "SUBSET_6": RGB + MSPEC + VINDEX + FILTERS + GLCM,
+    "SUBSET_2": RGB + MSPEC + VINDEX,
+    "SUBSET_3": RGB + FILTERS + GLCM,
+    "SUBSET_4": RGB + MSPEC + VINDEX + FILTERS + GLCM,
 }
 
-BEST_SUBSET = SUBSETS["SUBSET_6"]
+BEST_SUBSET = SUBSETS["SUBSET_4"]
 BEST_NTREES = 32
 
 IMPORTANCE_THRESHOLD = 0.01
@@ -78,7 +76,7 @@ result_columns = [
     "kappa",
 ]
 results = pd.DataFrame(columns=result_columns)
-results.to_csv("ranking_results_multiclass.csv", index=False)
+# results.to_csv("ranking_results_multiclass.csv", index=False)
 
 # ---------- Etapa 1: Treinar modelo em todas as features do subset ---------- #
 logger.info("-> Training model with the best subset of features")
@@ -100,7 +98,7 @@ importance_df.to_csv("feature_importances_multiclass.csv")
 ranked_features = importances.index
 
 # ----------- Etapa 2: Treinar modelos com features Top 1 até Top X ---------- #
-for X in range(len(ranked_features)):
+for X in range(11, len(ranked_features)):
     logger.info(f"---> Training model with the Top {X + 1} features")
 
     model = RandomForestModel(

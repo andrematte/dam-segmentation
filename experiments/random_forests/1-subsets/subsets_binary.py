@@ -71,15 +71,13 @@ result_columns = [
 results = pd.DataFrame(columns=result_columns)
 # results.to_csv("subsets_results_binary.csv", index=False)
 
-NTREES = [8, 16, 32, 64, 128]
+NTREES = [2, 4, 8, 16, 32, 64, 128]
 LABELS = [0, 1]
 SUBSETS = {
     "SUBSET_1": RGB,
-    "SUBSET_2": RGB + MSPEC,
-    "SUBSET_3": RGB + MSPEC + VINDEX,
-    "SUBSET_4": RGB + FILTERS + GLCM,
-    "SUBSET_5": RGB + MSPEC + FILTERS + GLCM,
-    "SUBSET_6": RGB + MSPEC + VINDEX + FILTERS + GLCM,
+    "SUBSET_2": RGB + MSPEC + VINDEX,
+    "SUBSET_3": RGB + FILTERS + GLCM,
+    "SUBSET_4": RGB + MSPEC + VINDEX + FILTERS + GLCM,
 }
 
 

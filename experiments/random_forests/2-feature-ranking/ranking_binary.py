@@ -15,7 +15,7 @@ from dam_segmentation.utils import logger_setup
 logger = logger_setup(to_file=False)
 
 train_path = "../../../data/train/binary_balanced_training.parquet"
-test_path = "../../../data/test/binary_test.parquet"
+test_path = "../../../data/test/binary_balanced_test.parquet"
 
 # train_path = "../../../data/train/binary_reduced_training.parquet"
 # test_path = "../../../data/test/binary_reduced_test.parquet"
@@ -37,54 +37,6 @@ GLCM = [
     "asm",
 ]
 FILTERS = [
-    "gabor_0",
-    "gabor_1",
-    "gabor_2",
-    "gabor_3",
-    "gabor_4",
-    "gabor_5",
-    "gabor_6",
-    "gabor_7",
-    "gabor_8",
-    "gabor_9",
-    "gabor_10",
-    "gabor_11",
-    "gabor_12",
-    "gabor_13",
-    "gabor_14",
-    "gabor_15",
-    "gabor_16",
-    "gabor_17",
-    "gabor_18",
-    "gabor_19",
-    "gabor_20",
-    "gabor_21",
-    "gabor_22",
-    "gabor_23",
-    "gabor_24",
-    "gabor_25",
-    "gabor_26",
-    "gabor_27",
-    "gabor_28",
-    "gabor_29",
-    "gabor_30",
-    "gabor_31",
-    "gabor_32",
-    "gabor_33",
-    "gabor_34",
-    "gabor_35",
-    "gabor_36",
-    "gabor_37",
-    "gabor_38",
-    "gabor_39",
-    "gabor_40",
-    "gabor_41",
-    "gabor_42",
-    "gabor_43",
-    "gabor_44",
-    "gabor_45",
-    "gabor_46",
-    "gabor_47",
     "canny",
     "laplacian",
     "roberts",
@@ -100,15 +52,13 @@ FILTERS = [
 LABELS = [0, 1]
 SUBSETS = {
     "SUBSET_1": RGB,
-    "SUBSET_2": RGB + MSPEC,
-    "SUBSET_3": RGB + MSPEC + VINDEX,
-    "SUBSET_4": RGB + FILTERS + GLCM,
-    "SUBSET_5": RGB + MSPEC + FILTERS + GLCM,
-    "SUBSET_6": RGB + MSPEC + VINDEX + FILTERS + GLCM,
+    "SUBSET_2": RGB + MSPEC + VINDEX,
+    "SUBSET_3": RGB + FILTERS + GLCM,
+    "SUBSET_4": RGB + MSPEC + VINDEX + FILTERS + GLCM,
 }
 
-BEST_SUBSET = SUBSETS["SUBSET_6"]
-BEST_NTREES = 128
+BEST_SUBSET = SUBSETS["SUBSET_4"]
+BEST_NTREES = 16
 
 IMPORTANCE_THRESHOLD = 0.01
 
