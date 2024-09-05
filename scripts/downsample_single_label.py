@@ -2,7 +2,7 @@ import pandas as pd
 
 # Step 1: Load your dataset
 df = pd.read_parquet(
-    "/Users/andrematte/Developer/Projects/phd/dam_segmentation/data/train/multiclass_training.parquet"
+    "/Users/andrematte/Developer/Projects/phd/dam_segmentation/data/test/multiclass_test.parquet"
 )
 
 # Step 2: Identify the label with the fewest samples (underrepresented)
@@ -32,5 +32,5 @@ balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(
 
 print(balanced_df["label"].value_counts())
 balanced_df.to_parquet(
-    "/Users/andrematte/Developer/Projects/phd/dam_segmentation/data/train/multiclass_balanced_training.parquet"
+    "/Users/andrematte/Developer/Projects/phd/dam_segmentation/data/test/multiclass_balanced_test.parquet"
 )

@@ -21,7 +21,7 @@ from dam_segmentation.utils import logger_setup
 logger = logger_setup(to_file=False)
 
 train_path = "../../../data/train/multiclass_balanced_training.parquet"
-test_path = "../../../data/test/multiclass_test.parquet"
+test_path = "../../../data/test/multiclass_balanced_test.parquet"
 
 # train_path = "../../../data/train/multiclass_reduced_training.parquet"
 # test_path = "../../../data/test/multiclass_reduced_test.parquet"
@@ -69,7 +69,7 @@ result_columns = [
 results = pd.DataFrame(columns=result_columns)
 # results.to_csv("subsets_results_multiclass.csv", index=False)
 
-NTREES = [8, 16, 32, 64, 128]
+NTREES = [128]  # [8, 16, 32, 64, 128]
 LABELS = [0, 1, 2, 3]
 SUBSETS = {
     "SUBSET_1": RGB,
@@ -85,7 +85,7 @@ for SUBSET in SUBSETS.keys():
     logger.info(f"-> Treinando modelos para o {SUBSET}")
     for ntrees in NTREES:
         model = RandomForestModel(
-            n_estimators=ntrees, max_features="sqrt", seed=23
+            n_estimators=ntrees, max_features="sqrt", seed=23, n_jobs=7
         )
         model.load_train_data(train_data[SUBSETS[SUBSET] + ["label"]])
         model.load_test_data(
