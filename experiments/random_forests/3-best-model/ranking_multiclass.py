@@ -6,7 +6,7 @@
 # de Features, conforme determinado nos Experimentos 1 e 2.
 #
 # ---------------------------------------------------------------------------- #
-
+import joblib
 import pandas as pd
 
 from dam_segmentation.train_rf import RandomForestModel
@@ -14,11 +14,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-# train_path = "../../../data/train/binary_balanced_training.parquet"
-# test_path = "../../../data/test/binary_test.parquet"
-
-train_path = "../../../data/train/binary_reduced_training.parquet"
-test_path = "../../../data/test/binary_reduced_test.parquet"
+train_path = "../../../data/train/multiclass_balanced_training.parquet"
+test_path = "../../../data/test/multiclass_balanced_test.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -28,13 +25,13 @@ test_data = pd.read_parquet(test_path)
 
 LABELS = [0, 1, 2, 3]
 LABEL_NAMES = ["Background", "Vegetation", "Stairways", "Drainage"]
-NFEATURES = 15
-NTREES = 128
-SUBSET = "CENARIO_6"
+NFEATURES = 16
+NTREES = 32
+SUBSET = "SUBSET_4"
 
-features = pd.read_csv("../2-feature-ranking/feature_importances.csv")[
-    "Feature"
-].values[:NFEATURES]
+features = pd.read_csv(
+    "../2-feature-ranking/feature_importances_multiclass.csv"
+)["Feature"].values[:NFEATURES]
 
 result_columns = [
     "name",
@@ -92,3 +89,4 @@ report = pd.DataFrame(model.metrics["Report"]).transpose()
 confmat.to_csv("confusion_matrix_multiclass.csv")
 confmat_norm.to_csv("normalized_confusion_matrix_multiclass.csv")
 report.to_csv("classification_report_multiclass.csv")
+joblib.dump(model.model, "rf_final_multiclass.joblib")
