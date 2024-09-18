@@ -233,3 +233,4 @@ pyrightconfig.json
 data/
 experiments/4-inference/
 .python-version
+*.csv
