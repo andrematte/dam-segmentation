@@ -1,5 +1,7 @@
 # Dam Segmentation
 
+[![DOI](https://zenodo.org/badge/849929315.svg)](https://zenodo.org/doi/10.5281/zenodo.13776999)
+
 This repository contains the source code for embankment dam land-cover segmentation based on multispectral remote sensing imagery.
 The work was submitted to PeerJ Computer Science as a scientific article.
 
