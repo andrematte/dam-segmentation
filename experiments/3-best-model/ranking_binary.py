@@ -14,11 +14,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train/binary_balanced_training.parquet"
-test_path = "../../../data/test/binary_balanced_test.parquet"
-
-# train_path = "../../../data/train/binary_reduced_training.parquet"
-# test_path = "../../../data/test/binary_reduced_test.parquet"
+train_path = "../../../data/train_data_binary.parquet"
+test_path = "../../../data/test_data_binary.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -39,9 +36,6 @@ features = pd.read_csv("../2-feature-ranking/feature_importances_binary.csv")[
 result_columns = [
     "name",
     "nTrees",
-    # "maxSamples",
-    # "maxDepth",
-    # "maxFeatures",
     "trainTime",
     "accuracy",
     "precision",
@@ -63,8 +57,6 @@ result = {
     "name": f"{SUBSET} - Top {NFEATURES}",
     "nTrees": NTREES,
     "maxSamples": model.max_samples,
-    # "maxDepth": model.max_depth,
-    # "maxFeatures": "sqrt",
     "trainTime": model.train_time,
     "accuracy": model.metrics["Accuracy"],
     "precision": model.metrics["Precision"],
@@ -93,4 +85,4 @@ confmat.to_csv("confusion_matrix_binary.csv")
 confmat_norm.to_csv("normalized_confusion_matrix_binary.csv")
 report.to_csv("classification_report_binary.csv")
 
-joblib.dump(model.model, 'rf_final_binary.joblib')
+joblib.dump(model.model, "rf_final_binary.joblib")

@@ -20,11 +20,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train/multiclass_balanced_training.parquet"
-test_path = "../../../data/test/multiclass_balanced_test.parquet"
-
-# train_path = "../../../data/train/multiclass_reduced_training.parquet"
-# test_path = "../../../data/test/multiclass_reduced_test.parquet"
+train_path = "../../../data/train_data_multiclass.parquet"
+test_path = "../../../data/test_data_multiclass.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -67,7 +64,7 @@ result_columns = [
     "kappa",
 ]
 results = pd.DataFrame(columns=result_columns)
-# results.to_csv("subsets_results_multiclass.csv", index=False)
+results.to_csv("subsets_results_multiclass.csv", index=False)
 
 NTREES = [2, 4, 8, 16, 32, 64, 128]
 LABELS = [0, 1, 2, 3]
@@ -96,8 +93,6 @@ for SUBSET in SUBSETS.keys():
             "name": SUBSET,
             "nTrees": ntrees,
             "maxSamples": model.max_samples,
-            # "maxDepth": model.max_depth,
-            # "maxFeatures": "sqrt",
             "trainTime": model.train_time,
             "accuracy": model.metrics["Accuracy"],
             "precision": model.metrics["Precision"],
@@ -105,10 +100,6 @@ for SUBSET in SUBSETS.keys():
             "f1score": model.metrics["F1 Score"],
             "kappa": model.metrics["Kappa"],
         }
-        # results = pd.concat(
-        #     [results, pd.DataFrame(result, index=[0]).round(4)],
-        #     ignore_index=True,
-        # )
 
         results = pd.DataFrame(result, index=[0]).round(4)
         results.to_csv(

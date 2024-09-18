@@ -20,11 +20,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train/binary_balanced_training.parquet"
-test_path = "../../../data/test/binary_balanced_test.parquet"
-
-# train_path = "../../../data/train/binary_reduced_training.parquet"
-# test_path = "../../../data/test/binary_reduced_test.parquet"
+train_path = "../../../data/train_data_binary.parquet"
+test_path = "../../../data/test_data_binary.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -69,7 +66,7 @@ result_columns = [
     "kappa",
 ]
 results = pd.DataFrame(columns=result_columns)
-# results.to_csv("subsets_results_binary.csv", index=False)
+results.to_csv("subsets_results_binary.csv", index=False)
 
 NTREES = [2, 4, 8, 16, 32, 64, 128]
 LABELS = [0, 1]
@@ -107,11 +104,6 @@ for SUBSET in SUBSETS.keys():
             "f1score": model.metrics["F1 Score"],
             "kappa": model.metrics["Kappa"],
         }
-
-        # results = pd.concat(
-        #     [results, pd.DataFrame(result, index=[0]).round(4)],
-        #     ignore_index=True,
-        # )
 
         results = pd.DataFrame(result, index=[0]).round(4)
         results.to_csv(

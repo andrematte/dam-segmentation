@@ -14,11 +14,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train/multiclass_balanced_training.parquet"
-test_path = "../../../data/test/multiclass_balanced_test.parquet"
-
-# train_path = "../../../data/train/multiclass_reduced_training.parquet"
-# test_path = "../../../data/test/multiclass_reduced_test.parquet"
+train_path = "../../../data/train_data_binary.parquet"
+test_path = "../../../data/test_data_binary.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -49,7 +46,7 @@ FILTERS = [
     "gaussian 15",
     "median 7",
 ]
-LABELS = [0, 1, 2, 3]
+LABELS = [0, 1]
 SUBSETS = {
     "SUBSET_1": RGB,
     "SUBSET_2": RGB + MSPEC + VINDEX,
@@ -58,16 +55,13 @@ SUBSETS = {
 }
 
 BEST_SUBSET = SUBSETS["SUBSET_4"]
-BEST_NTREES = 32
+BEST_NTREES = 16
 
 IMPORTANCE_THRESHOLD = 0.01
 
 result_columns = [
     "name",
     "nTrees",
-    # "maxSamples",
-    # "maxDepth",
-    # "maxFeatures",
     "trainTime",
     "accuracy",
     "precision",
@@ -76,7 +70,7 @@ result_columns = [
     "kappa",
 ]
 results = pd.DataFrame(columns=result_columns)
-# results.to_csv("ranking_results_multiclass.csv", index=False)
+results.to_csv("ranking_results_binary.csv", index=False)
 
 # ---------- Etapa 1: Treinar modelo em todas as features do subset ---------- #
 logger.info("-> Training model with the best subset of features")
@@ -93,12 +87,12 @@ importances = importances[importances > IMPORTANCE_THRESHOLD]
 
 importance_df = pd.DataFrame(importances, columns=["Importance"])
 importance_df.index.name = "Feature"
-importance_df.to_csv("feature_importances_multiclass.csv")
+importance_df.to_csv("feature_importances_binary.csv")
 
 ranked_features = importances.index
 
 # ----------- Etapa 2: Treinar modelos com features Top 1 até Top X ---------- #
-for X in range(11, len(ranked_features)):
+for X in range(len(ranked_features)):
     logger.info(f"---> Training model with the Top {X + 1} features")
 
     model = RandomForestModel(
@@ -118,8 +112,6 @@ for X in range(11, len(ranked_features)):
         "name": f"Top {X + 1}",
         "nTrees": BEST_NTREES,
         "maxSamples": model.max_samples,
-        # "maxDepth": model.max_depth,
-        # "maxFeatures": "sqrt",
         "trainTime": model.train_time,
         "accuracy": model.metrics["Accuracy"],
         "precision": model.metrics["Precision"],
@@ -127,14 +119,10 @@ for X in range(11, len(ranked_features)):
         "f1score": model.metrics["F1 Score"],
         "kappa": model.metrics["Kappa"],
     }
-    # results = pd.concat(
-    #     [results, pd.DataFrame(result, index=[0]).round(4)],
-    #     ignore_index=True,
-    # )
 
     results = pd.DataFrame(result, index=[0]).round(4)
     results.to_csv(
-        "ranking_results_multiclass.csv",
+        "ranking_results_binary.csv",
         mode="a",
         index=False,
         header=False,

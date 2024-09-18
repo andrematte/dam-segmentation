@@ -14,8 +14,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train/multiclass_balanced_training.parquet"
-test_path = "../../../data/test/multiclass_balanced_test.parquet"
+train_path = "../../../data/train_data_multiclass.parquet"
+test_path = "../../../data/test_data_multiclass.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -36,9 +36,6 @@ features = pd.read_csv(
 result_columns = [
     "name",
     "nTrees",
-    # "maxSamples",
-    # "maxDepth",
-    # "maxFeatures",
     "trainTime",
     "accuracy",
     "precision",
@@ -60,8 +57,6 @@ result = {
     "name": f"{SUBSET} - Top {NFEATURES}",
     "nTrees": NTREES,
     "maxSamples": model.max_samples,
-    # "maxDepth": model.max_depth,
-    # "maxFeatures": "sqrt",
     "trainTime": model.train_time,
     "accuracy": model.metrics["Accuracy"],
     "precision": model.metrics["Precision"],
