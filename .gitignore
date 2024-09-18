@@ -231,3 +231,5 @@ pyrightconfig.json
 # Generated using ignr.py - github.com/Antrikshy/ignr.py
 
 data/
+experiments/4-inference/
+.python-version
