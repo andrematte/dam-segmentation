@@ -1,3 +1,8 @@
+# Dam Segmentation
+
+This repository contains the source code for embankment dam land-cover segmentation based on multispectral remote sensing imagery.
+The work was submitted to PeerJ Computer Science as a scientific article.
+
 ## Setup
 
 Project requirements are specifiec in the `pyproject.toml` file. The environment is set up using Poetry.
@@ -23,8 +28,9 @@ poetry shell
 
 In order to create the dataset and execute the experiments:
 
-1. Download the dataset from the HuggingFace repository and store it in the `./data/` folder while keeping the file structure.
-![Dataset Link](https://huggingface.co/datasets/andrematte/dam-segmentation)
+1. Download the dataset from the HuggingFace repository and store it in the `./data/` folder while keeping the file structure. 
+
+> **Dataset available at: https://huggingface.co/datasets/andrematte/dam-segmentation**
 
 2. Execute `scripts/create_tabular_dataset.py` to create the tabular dataset:
 
@@ -33,3 +39,14 @@ python scripts/create_tabular_dataset.py
 ```
 
 Tabular data will be stored in the `.parquet` format and split into train and test data.
+
+## Replicating the Experiments
+
+To replicate each experiment described in the paper:
+
+1. Navigate to the experiment folder with `cd`. Example: `cd experiments/1-feature-subsets`
+2. Run the experiment script with `python`. Example: `python subsets_binary.py`
+
+## License
+
+This project is licensed under the terms of MIT License.
