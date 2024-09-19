@@ -7,7 +7,7 @@ The work was submitted to PeerJ Computer Science as a scientific article.
 
 ## Setup
 
-Project requirements are specifiec in the `pyproject.toml` file. The environment is set up using Poetry.
+Project requirements are specified in the `pyproject.toml` file. The environment is set up using Poetry.
 
 1. Clone this repository and navigate to its directory
 ```sh
@@ -33,6 +33,14 @@ In order to create the dataset and execute the experiments:
 1. Download the dataset from the HuggingFace repository and store it in the `./data/` folder while keeping the file structure. 
 
 > **Dataset available at: https://huggingface.co/datasets/andrematte/dam-segmentation**
+
+Make sure you have git-lfs installed before cloning the dataset repository.
+
+```sh
+mkdir data
+cd data
+git clone https://huggingface.co/datasets/andrematte/dam-segmentation
+```
 
 2. Execute `scripts/create_tabular_dataset.py` to create the tabular dataset:
 
