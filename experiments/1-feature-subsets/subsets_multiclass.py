@@ -20,8 +20,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train_data_multiclass.parquet"
-test_path = "../../../data/test_data_multiclass.parquet"
+train_path = "../../data/train/train_data_multiclass_downsampled.parquet"
+test_path = "../../data/test/test_data_multiclass.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
@@ -30,14 +30,14 @@ test_data = pd.read_parquet(test_path)
 RGB = ["gray", "red", "green", "blue"]
 MSPEC = ["rededge", "nir"]
 VINDEX = ["ndvi", "gndvi", "ndre", "ndwi"]
-GLCM = [
-    "contrast",
-    "dissimilarity",
-    "homogeneity",
-    "entropy",
-    "correlation",
-    "asm",
-]
+# GLCM = [
+#     "contrast",
+#     "dissimilarity",
+#     "homogeneity",
+#     "entropy",
+#     "correlation",
+#     "asm",
+# ]
 FILTERS = [
     "canny",
     "laplacian",
@@ -50,6 +50,54 @@ FILTERS = [
     "gaussian 12",
     "gaussian 15",
     "median 7",
+    "gabor_0",
+    "gabor_1",
+    "gabor_2",
+    "gabor_3",
+    "gabor_4",
+    "gabor_5",
+    "gabor_6",
+    "gabor_7",
+    "gabor_8",
+    "gabor_9",
+    "gabor_10",
+    "gabor_11",
+    "gabor_12",
+    "gabor_13",
+    "gabor_14",
+    "gabor_15",
+    "gabor_16",
+    "gabor_17",
+    "gabor_18",
+    "gabor_19",
+    "gabor_20",
+    "gabor_21",
+    "gabor_22",
+    "gabor_23",
+    "gabor_24",
+    "gabor_25",
+    "gabor_26",
+    "gabor_27",
+    "gabor_28",
+    "gabor_29",
+    "gabor_30",
+    "gabor_31",
+    "gabor_32",
+    "gabor_33",
+    "gabor_34",
+    "gabor_35",
+    "gabor_36",
+    "gabor_37",
+    "gabor_38",
+    "gabor_39",
+    "gabor_40",
+    "gabor_41",
+    "gabor_42",
+    "gabor_43",
+    "gabor_44",
+    "gabor_45",
+    "gabor_46",
+    "gabor_47",
 ]
 
 result_columns = [
@@ -66,13 +114,13 @@ result_columns = [
 results = pd.DataFrame(columns=result_columns)
 results.to_csv("subsets_results_multiclass.csv", index=False)
 
-NTREES = [2, 4, 8, 16, 32, 64, 128]
+NTREES = [64, 128]  # [2, 4, 8, 16, 32, 64, 128]
 LABELS = [0, 1, 2, 3]
 SUBSETS = {
-    "SUBSET_1": RGB,
-    "SUBSET_2": RGB + MSPEC + VINDEX,
-    "SUBSET_3": RGB + FILTERS + GLCM,
-    "SUBSET_4": RGB + MSPEC + VINDEX + FILTERS + GLCM,
+    # "SUBSET_1": RGB,
+    # "SUBSET_2": RGB + MSPEC + VINDEX,
+    # "SUBSET_3": RGB + FILTERS,
+    "SUBSET_4": RGB + MSPEC + VINDEX + FILTERS,
 }
 
 

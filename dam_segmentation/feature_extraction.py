@@ -60,15 +60,15 @@ class Features:
         df["ndwi"] = self.image.get_ndwi().reshape(-1)
 
         logger.info("-----> Extracting texture features")
-        texture_features = extract_glcm_features(self.image.get_gray())
+        # texture_features = extract_glcm_features(self.image.get_gray())
 
         logger.info("-----> Extracting filter features")
-        filter_features = extract_filter_features(self.image.get_gndvi())
-        # gabor_features, _, _ = extract_gabor_features(self.image.get_gndvi())
+        filter_features = extract_filter_features(self.image.get_gray())
+        gabor_features, _, _ = extract_gabor_features(self.image.get_gray())
 
         df = (
-            df.join(filter_features).join(texture_features)
-            # .join(gabor_features)
+            df.join(filter_features).join(gabor_features)
+            # .join(texture_features)
         )
 
         if self.label_path:
@@ -90,8 +90,8 @@ class Features:
 def create_dataset(image_dir: list[str], label_dir: list[str]) -> None:
     logger.info("-> Initiating dataset creation")
 
-    image_paths = glob(f"{image_dir}/*.tiff")
-    label_paths = glob(f"{label_dir}/*.tiff")
+    image_paths = glob(f"{image_dir}/*.tif*")
+    label_paths = glob(f"{label_dir}/*.tif*")
     logger.info(f"-> Images: {len(image_paths)}. Labels: {len(label_paths)}")
     assert len(image_paths) == len(
         label_paths
@@ -192,7 +192,7 @@ def calculate_glcm_for_window(window, distances, angles, levels):
 
 
 def extract_glcm_features(
-    image, distances=[1], angles=[0], levels=256, window_size=3, n_jobs=-1
+    image, distances=[1], angles=[0], levels=256, window_size=3, n_jobs=4
 ):
     """
     Extract GLCM features for each pixel in the image over a neighborhood defined by window_size.
