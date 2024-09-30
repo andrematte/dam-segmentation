@@ -19,6 +19,8 @@ seaborn = "^0.13.2"
 joblib = "^1.4.2"
 ms-image-tool = "^1.0.1"
 datasets = "^3.0.0"
+imagecodecs = "^2024.9.22"
+imbalanced-learn = "^0.12.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
