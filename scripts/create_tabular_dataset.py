@@ -1,42 +1,45 @@
-from sklearn.model_selection import train_test_split
-
 from dam_segmentation.feature_extraction import create_dataset
 
 # ----------------------- Create Binary Tabular Dataset ---------------------- #
 
-images = "./data/images"
-labels = "./data/labels_binary"
+train_images = "/Users/andrematte/Data/nesa-dataset/images/train"
+train_labels = "/Users/andrematte/Data/nesa-dataset/mask_binary/train"
 
-dataset = create_dataset(images, labels)
-
-train, test = train_test_split(
-    dataset, test_size=0.2, random_state=42, stratify="label"
-)
+train = create_dataset(train_images, train_labels)
 
 train.to_parquet(
-    ".data/train_data_binary.parquet",
+    "./data/train_data_binary.parquet",
     index=False,
 )
+
+test_images = "/Users/andrematte/Data/nesa-dataset/images/test"
+test_labels = "/Users/andrematte/Data/nesa-dataset/mask_binary/test"
+
+test = create_dataset(test_images, test_labels)
+
 test.to_parquet(
-    ".data/test_data_binary.parquet",
+    "./data/test_data_binary.parquet",
     index=False,
 )
 
 # -------------------- Create Multi-Class Tabular Dataset -------------------- #
 
-labels = "./data/labels_multiclass"
+train_images = "/Users/andrematte/Data/nesa-dataset/images/train"
+train_labels = "/Users/andrematte/Data/nesa-dataset/mask_multiclass/train"
 
-dataset = create_dataset(images, labels)
-
-train, test = train_test_split(
-    dataset, test_size=0.2, random_state=42, stratify="label"
-)
+train = create_dataset(train_images, train_labels)
 
 train.to_parquet(
-    ".data/train_data_multiclass.parquet",
+    "./data/train_data_multiclass.parquet",
     index=False,
 )
+
+test_images = "/Users/andrematte/Data/nesa-dataset/images/test"
+test_labels = "/Users/andrematte/Data/nesa-dataset/mask_multiclass/test"
+
+test = create_dataset(test_images, test_labels)
+
 test.to_parquet(
-    ".data/test_data_multiclass.parquet",
+    "./data/test_data_multiclass.parquet",
     index=False,
 )
