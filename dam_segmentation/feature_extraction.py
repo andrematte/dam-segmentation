@@ -59,7 +59,7 @@ class Features:
         df["ndre"] = self.image.get_ndre().reshape(-1)
         df["ndwi"] = self.image.get_ndwi().reshape(-1)
 
-        logger.info("-----> Extracting texture features")
+        # logger.info("-----> Extracting texture features")
         # texture_features = extract_glcm_features(self.image.get_gray())
 
         logger.info("-----> Extracting filter features")
@@ -125,7 +125,10 @@ def extract_filter_features(image: np.ndarray) -> pd.DataFrame:
     filter_features["gaussian 7"] = gaussian_filter(image, 7).reshape(-1)
     filter_features["gaussian 12"] = gaussian_filter(image, 12).reshape(-1)
     filter_features["gaussian 15"] = gaussian_filter(image, 15).reshape(-1)
+    filter_features["median 3"] = median_filter(image, 3).reshape(-1)
     filter_features["median 7"] = median_filter(image, 7).reshape(-1)
+    filter_features["median 12"] = median_filter(image, 12).reshape(-1)
+    filter_features["median 15"] = median_filter(image, 15).reshape(-1)
 
     return filter_features
 

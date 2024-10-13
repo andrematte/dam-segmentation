@@ -1,6 +1,8 @@
 import time
 from datetime import datetime
 
+import joblib
+import numpy as np
 import pandas as pd
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
@@ -25,23 +27,27 @@ class RandomForestModel:
         label_names: list[str] = None,
         n_jobs: int = -1,
         seed: int = 23,
+        model_path: str = None,
     ):
-        self.id = datetime.now().strftime(f"%Y%m%d-%H%M%S-{seed}")
+        if model_path:
+            self.model = joblib.load(model_path)
+        else:
+            self.id = datetime.now().strftime(f"%Y%m%d-%H%M%S-{seed}")
 
-        self.seed = seed
-        self.n_jobs = n_jobs
-        self.n_estimators = n_estimators
-        self.max_features = max_features
-        self.max_depth = max_depth
-        self.max_samples = max_samples
-        self.label_names = label_names
+            self.seed = seed
+            self.n_jobs = n_jobs
+            self.n_estimators = n_estimators
+            self.max_features = max_features
+            self.max_depth = max_depth
+            self.max_samples = max_samples
+            self.label_names = label_names
 
-        logger.info("-> Initializing Random Forest model")
-        logger.info(
-            f"---> nEstimators: {n_estimators}, maxFeatures: {max_features}, seed: {seed}"
-        )
+            logger.info("-> Initializing Random Forest model")
+            logger.info(
+                f"---> nEstimators: {n_estimators}, maxFeatures: {max_features}, seed: {seed}"
+            )
 
-        self.model = self.init_model()
+            self.model = self.init_model()
 
     def init_model(self):
         return RandomForestClassifier(
@@ -51,6 +57,7 @@ class RandomForestModel:
             n_jobs=self.n_jobs,
             max_depth=self.max_depth,
             max_samples=self.max_samples,
+            oob_score=True,
         )
 
     def load_train_data(self, dataset: pd.DataFrame):
@@ -79,15 +86,40 @@ class RandomForestModel:
         logger.info("---> Testing model")
 
         self.pred_test_set = self.model.predict(self.X_test)
+        self.pred_test_set_prob = self.model.predict_proba(self.X_test)
+
+        if len(np.unique(self.y_test)) > 2:
+            logger.info("---> Multiclass classification")
+            average = "macro"
+            multi_class = "ovo"
+        else:
+            logger.info("---> Binary classification")
+            average = "binary"
+            multi_class = "raise"
+            self.pred_test_set_prob = self.pred_test_set_prob[:, 1]
+
+        oob_error = 1 - self.model.oob_score_
+
         accuracy = metrics.accuracy_score(self.y_test, self.pred_test_set)
+        bal_accuracy = metrics.balanced_accuracy_score(
+            self.y_test, self.pred_test_set
+        )
         precision = metrics.precision_score(
-            self.y_test, self.pred_test_set, average="macro"
+            self.y_test, self.pred_test_set, average=average
         )
         recall = metrics.recall_score(
-            self.y_test, self.pred_test_set, average="macro"
+            self.y_test, self.pred_test_set, average=average
         )
-        f1 = metrics.f1_score(self.y_test, self.pred_test_set, average="macro")
+        f1 = metrics.f1_score(self.y_test, self.pred_test_set, average=average)
         kappa = metrics.cohen_kappa_score(self.y_test, self.pred_test_set)
+
+        macro_auc = metrics.roc_auc_score(
+            self.y_test,
+            self.pred_test_set_prob,
+            multi_class=multi_class,
+            average="macro",
+        )
+
         report = metrics.classification_report(
             self.y_test,
             self.pred_test_set,
@@ -107,7 +139,9 @@ class RandomForestModel:
         )
 
         self.metrics = {
+            "OOB Error": oob_error,
             "Accuracy": accuracy,
+            "Balanced Accuracy": bal_accuracy,
             "Precision": precision,
             "Recall": recall,
             "F1 Score": f1,
@@ -115,9 +149,12 @@ class RandomForestModel:
             "Report": report,
             "Confusion Matrix": conf_mat,
             "Normalized Confusion Matrix": norm_conf_mat,
+            "AUC": macro_auc,
         }
 
-        logger.info(f"---> Accuracy: {accuracy:.2f}, F1-Score: {f1:.2f}")
+        logger.info(
+            f"---> Balanced Accuracy: {bal_accuracy:.3f}, F1-Score: {f1:.3f}, AUC: {macro_auc:.3f}"
+        )
 
     def compute_feature_importances(self, type="mdi"):
         if type == "mdi":
