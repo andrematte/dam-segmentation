@@ -8,6 +8,7 @@
 # ---------------------------------------------------------------------------- #
 import joblib
 import pandas as pd
+from sklearn.metrics import auc, roc_curve
 
 from dam_segmentation.train_rf import RandomForestModel
 from dam_segmentation.utils import logger_setup
@@ -71,6 +72,33 @@ result = {
 }
 results = pd.DataFrame(result, index=[0]).round(4)
 
+# ---------------------------- Calcular ROC Curve ---------------------------- #
+num_classes = model.pred_test_set_prob.shape[1]
+roc_data = []
+
+for i in range(num_classes):
+    y_test_binary = (model.y_test == i).astype(int)
+    fpr, tpr, thresholds = roc_curve(
+        y_test_binary, model.pred_test_set_prob[:, i]
+    )
+    roc_auc = auc(fpr, tpr)
+    class_data = pd.DataFrame(
+        {
+            "Class": [i] * len(fpr),
+            "FPR": fpr,
+            "TPR": tpr,
+            "Thresholds": thresholds,
+            "AUC": [roc_auc] * len(fpr),
+        }
+    )
+    roc_data.append(class_data)
+
+roc_df = pd.concat(roc_data, ignore_index=True)
+
+
+# ----------------------------- Salvar Resultados ---------------------------- #
+
+roc_df.to_csv("roc_multiclass.csv", index=False)
 results.to_csv(
     "best_results_multiclass.csv",
     index=False,

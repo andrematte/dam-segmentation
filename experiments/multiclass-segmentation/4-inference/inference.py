@@ -1,7 +1,10 @@
+from glob import glob
+
 import cv2
 import joblib
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tifffile
 from sklearn.metrics import jaccard_score
 
@@ -9,93 +12,78 @@ from dam_segmentation.feature_extraction import Features
 from dam_segmentation.settings import SELECTED_FEATURES_MULTICLASS
 from dam_segmentation.utils import mask_to_rgb, rgb_to_mask
 
-paths = [
-    # "/Users/andrematte/Data/nesa-dataset/images/DIQUE6C_01_0265.tiff",
-    # "/Users/andrematte/Data/nesa-dataset/images/BVSA_01_0530.tiff",
-    # "/Users/andrematte/Data/nesa-dataset/images/BVSA_01_0377.tiff",
+selected = [
+    "/Users/andrematte/Data/nesa-dataset/test/images/S2_01_SLICED_0054.tiff",
+    "/Users/andrematte/Data/nesa-dataset/test/images/S1_01_SLICED_0228.tiff",
     "/Users/andrematte/Data/nesa-dataset/test/images/S1_01_SLICED_0218.tiff",
+    "/Users/andrematte/Data/nesa-dataset/test/images/S1_01_SLICED_0172.tiff",
     "/Users/andrematte/Data/nesa-dataset/test/images/S1_01_SLICED_0157.tiff",
-    "/Users/andrematte/Data/nesa-dataset/test/images/S1_01_SLICED_0036.tiff",
+    "/Users/andrematte/Data/nesa-dataset/test/images/S1_01_SLICED_0190.tiff",
 ]
 
-model_path = "/Users/andrematte/Developer/Projects/phd/dam-segmentation/experiments/multiclass-segmentation/3-best-model/rf_final_multiclass.joblib"
+image_paths = glob("/Users/andrematte/Data/nesa-dataset/test/images/*.tiff")
+multi_model_path = "/Users/andrematte/Developer/Projects/phd/dam-segmentation/experiments/multiclass-segmentation/3-best-model/rf_final_multiclass.joblib"
 
-input_image = "path"
-input_label = ""
 
 LABELS = [0, 1, 2, 3]
 LABEL_NAMES = ["Background", "Slope", "Stairways", "Drainage"]
 
-model = joblib.load(model_path)
 
-for i, path in enumerate(paths):
-    # bin_label = tifffile.imread(path.replace("images", "mask_binary"))
-    label = tifffile.imread(path.replace("images", "mask_multiclass"))
-    label_mask = rgb_to_mask(label)
+multi_model = joblib.load(multi_model_path)
 
-    features = Features(path).features[SELECTED_FEATURES_MULTICLASS]
+results = []
 
-    results = model.predict(features)
+for i, path in enumerate(image_paths):
+    multi_label = tifffile.imread(path.replace("images", "mask_multiclass"))
 
-    result_mask = results.reshape(256, 256)
-    smooth_mask = cv2.medianBlur(result_mask, ksize=11)
+    multi_label = rgb_to_mask(multi_label)
 
-    if len(np.unique(result_mask)) < 3:
-        iou_result = jaccard_score(
-            label_mask.flatten(), result_mask.flatten()
-        )  # , average="macro")
-        iou_smooth = jaccard_score(
-            label_mask.flatten(), smooth_mask.flatten()
-        )  # , average="macro")
+    multi_features = Features(path).features[SELECTED_FEATURES_MULTICLASS]
 
-    else:
-        iou_result = jaccard_score(
-            label_mask.flatten(), result_mask.flatten(), average="macro"
+    multi_pred = multi_model.predict(multi_features)
+
+    multi_pred_mask = multi_pred.reshape(256, 256)
+    smooth_multi_pred_mask = cv2.medianBlur(multi_pred_mask, ksize=11)
+
+    multi_iou = jaccard_score(
+        multi_label.flatten(), multi_pred_mask.flatten(), average="macro"
+    )
+    multi_iou_smooth = jaccard_score(
+        multi_label.flatten(),
+        smooth_multi_pred_mask.flatten(),
+        average="macro",
+    )
+
+    multi_pred_mask = mask_to_rgb(multi_pred_mask.reshape(256, 256, 1))
+    multi_smooth_mask = mask_to_rgb(
+        smooth_multi_pred_mask.reshape(256, 256, 1)
+    )
+
+    result = {
+        "image_path": path,
+        "multi_iou": multi_iou,
+        "multi_iou_smooth": multi_iou_smooth,
+        "multi_smooth_diff": multi_iou_smooth - multi_iou,
+    }
+
+    results.append(result)
+
+    if path in selected:
+        cv2.imwrite(
+            f"inferences/{i}_rgb_pred.png",
+            cv2.cvtColor(multi_pred_mask, cv2.COLOR_RGB2BGR),
         )
-        iou_smooth = jaccard_score(
-            label_mask.flatten(), smooth_mask.flatten(), average="macro"
+        cv2.imwrite(
+            f"inferences/{i}_rgb_smooth.png",
+            cv2.cvtColor(multi_smooth_mask, cv2.COLOR_RGB2BGR),
         )
 
-    print(path)
-    print(f"IOU Result: {iou_result:.3f}, IOU Smooth: {iou_smooth:.3f}")
+        diff = cv2.absdiff(multi_pred_mask, multi_smooth_mask)
+        cv2.imwrite(
+            f"inferences/{i}_diff.png",
+            cv2.cvtColor(diff, cv2.COLOR_RGB2BGR),
+        )
 
-    result_mask = mask_to_rgb(result_mask.reshape(256, 256, 1))
-    smooth_mask = mask_to_rgb(smooth_mask.reshape(256, 256, 1))
 
-    plt.axis("off")
-
-    # plt.imshow(label)
-    # plt.savefig(
-    #     f"/Users/andrematte/Developer/Projects/phd/dam_segmentation/experiments/random_forests/4-inference/results/{i}_label.png",
-    #     bbox_inches="tight",
-    #     pad_inches=0,
-    # )
-
-    # plt.imshow(result_mask)
-    # plt.savefig(
-    #     f"/Users/andrematte/Developer/Projects/phd/dam_segmentation/experiments/random_forests/4-inference/results/{i}_result_IoU_{iou_result:.3f}.png",
-    #     bbox_inches="tight",
-    #     pad_inches=0,
-    # )
-
-    # plt.imshow(cv2.absdiff(label, result_mask))
-    # plt.savefig(
-    #     f"/Users/andrematte/Developer/Projects/phd/dam_segmentation/experiments/random_forests/4-inference/results/{i}_result_diff.png",
-    #     bbox_inches="tight",
-    #     pad_inches=0,
-    # )
-
-    plt.imshow(smooth_mask)
-    # plt.savefig(
-    #     f"/Users/andrematte/Developer/Projects/phd/dam_segmentation/experiments/random_forests/4-inference/results/{i}_smooth_IoU_{iou_smooth:.3f}.png",
-    #     bbox_inches="tight",
-    #     pad_inches=0,
-    # )
-
-    # plt.imshow(cv2.absdiff(label, smooth_mask))
-    # plt.savefig(
-    #     f"/Users/andrematte/Developer/Projects/phd/dam_segmentation/experiments/random_forests/4-inference/results/{i}_smooth_diff.png",
-    #     bbox_inches="tight",
-    #     pad_inches=0,
-    # )
-    break
+df = pd.DataFrame(results)
+df.to_csv("test_results_iou.csv", index=False)
