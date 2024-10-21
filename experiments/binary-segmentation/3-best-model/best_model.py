@@ -26,8 +26,8 @@ test_data = pd.read_parquet(test_path)
 
 LABELS = [0, 1]
 LABEL_NAMES = ["Not Slope", "Slope"]
-NFEATURES = 15
-NTREES = 128
+NFEATURES = 17
+NTREES = 256
 SUBSET = "SUBSET_4"
 
 features = pd.read_csv("../2-feature-ranking/feature_importances_binary.csv")[

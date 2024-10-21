@@ -27,7 +27,7 @@ test_data = pd.read_parquet(test_path)
 LABELS = [0, 1, 2, 3]
 LABEL_NAMES = ["Background", "Vegetation", "Stairways", "Drainage"]
 NFEATURES = 24
-NTREES = 128
+NTREES = 256
 SUBSET = "SUBSET_4"
 
 features = pd.read_csv(

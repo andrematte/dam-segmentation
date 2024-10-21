@@ -100,6 +100,8 @@ SELECTED_FEATURES_BINARY = [
     "gaussian 12",
     "median 7",
     "gaussian 3",
+    "gabor_27",
+    "gabor_3",
 ]
 
 SELECTED_FEATURES_MULTICLASS = [
