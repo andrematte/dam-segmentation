@@ -231,6 +231,7 @@ pyrightconfig.json
 # Generated using ignr.py - github.com/Antrikshy/ignr.py
 
 data/
-experiments/4-inference/
+experiments/binary-segmentation/4-inference/inferences/
+experiments/multiclass-segmentation/4-inference/inferences/
 .python-version
 *.csv
