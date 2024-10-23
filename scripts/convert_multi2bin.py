@@ -1,3 +1,8 @@
+# This scripts is used to convert the multiclass dataset labels to binary labels
+# The multiclass dataset has 4 classes: 0, 1, 2, 3
+# The binary dataset has 2 classes: 0, 1
+# The binary dataset is created by changing the labels of all rows where label in [2, 3] to 0
+
 import pandas as pd
 
 train = "../data/train_data_multiclass_downsampled.parquet"

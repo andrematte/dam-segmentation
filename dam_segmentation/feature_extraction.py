@@ -5,10 +5,8 @@ import cv2
 import numpy as np
 import pandas as pd
 import tifffile
-from joblib import Parallel, delayed
 from ms_image_tool.image import Image
 from scipy import ndimage as nd
-from skimage.feature import graycomatrix, graycoprops
 from skimage.filters import prewitt, roberts, scharr, sobel
 
 from dam_segmentation.utils import logger_setup, rgb_to_mask
@@ -59,17 +57,11 @@ class Features:
         df["ndre"] = self.image.get_ndre().reshape(-1)
         df["ndwi"] = self.image.get_ndwi().reshape(-1)
 
-        # logger.info("-----> Extracting texture features")
-        # texture_features = extract_glcm_features(self.image.get_gray())
-
         logger.info("-----> Extracting filter features")
         filter_features = extract_filter_features(self.image.get_gray())
         gabor_features, _, _ = extract_gabor_features(self.image.get_gray())
 
-        df = (
-            df.join(filter_features).join(gabor_features)
-            # .join(texture_features)
-        )
+        df = df.join(filter_features).join(gabor_features)
 
         if self.label_path:
             df["label"] = rgb_to_mask(
@@ -172,60 +164,6 @@ def extract_gabor_features(image: np.ndarray) -> pd.DataFrame:
     gabor_kernels = kernels
 
     return df, gabor_parameters, gabor_kernels
-
-
-def calculate_glcm_for_window(window, distances, angles, levels):
-    glcm = graycomatrix(
-        window,
-        distances=distances,
-        angles=angles,
-        levels=levels,
-        symmetric=True,
-        normed=True,
-    )
-    feature_vector = {
-        "contrast": graycoprops(glcm, "contrast").flatten()[0],
-        "dissimilarity": graycoprops(glcm, "dissimilarity").flatten()[0],
-        "homogeneity": graycoprops(glcm, "homogeneity").flatten()[0],
-        "entropy": graycoprops(glcm, "energy").flatten()[0],
-        "correlation": graycoprops(glcm, "correlation").flatten()[0],
-        "asm": graycoprops(glcm, "ASM").flatten()[0],
-    }
-    return feature_vector
-
-
-def extract_glcm_features(
-    image, distances=[1], angles=[0], levels=256, window_size=3, n_jobs=4
-):
-    """
-    Extract GLCM features for each pixel in the image over a neighborhood defined by window_size.
-    Returns a pandas DataFrame where each column is a feature and each row represents a pixel.
-    """
-    features = []
-    half_window = window_size // 2
-    padded_image = np.pad(
-        image, pad_width=half_window, mode="constant", constant_values=0
-    )
-
-    # Use parallel processing to speed up feature extraction
-    results = Parallel(n_jobs=n_jobs)(
-        delayed(calculate_glcm_for_window)(
-            padded_image[
-                i - half_window : i + half_window + 1,
-                j - half_window : j + half_window + 1,
-            ],
-            distances,
-            angles,
-            levels,
-        )
-        for i in range(half_window, image.shape[0] + half_window)
-        for j in range(half_window, image.shape[1] + half_window)
-    )
-
-    # Convert results to a pandas DataFrame
-    features = pd.DataFrame(results)
-
-    return features
 
 
 def canny_filter(

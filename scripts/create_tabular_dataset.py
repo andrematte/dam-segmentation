@@ -2,8 +2,8 @@ from dam_segmentation.feature_extraction import create_dataset
 
 # ----------------------- Create Binary Tabular Dataset ---------------------- #
 
-train_images = "/Users/andrematte/Data/nesa-dataset/train/images/"
-train_labels = "/Users/andrematte/Data/nesa-dataset/train/mask_binary"
+train_images = "../data/train/images/"
+train_labels = "../data/train/mask_binary"
 
 train = create_dataset(train_images, train_labels)
 
@@ -12,8 +12,8 @@ train.to_parquet(
     index=False,
 )
 
-val_images = "/Users/andrematte/Data/nesa-dataset/val/images/"
-val_labels = "/Users/andrematte/Data/nesa-dataset/val/mask_binary/"
+val_images = "../data/val/images/"
+val_labels = "../data/val/mask_binary/"
 
 val = create_dataset(val_images, val_labels)
 
@@ -22,8 +22,8 @@ val.to_parquet(
     index=False,
 )
 
-test_images = "/Users/andrematte/Data/nesa-dataset/test/images/"
-test_labels = "/Users/andrematte/Data/nesa-dataset/test/mask_binary"
+test_images = "../data/test/images/"
+test_labels = "../data/test/mask_binary"
 
 test = create_dataset(test_images, test_labels)
 
@@ -34,8 +34,8 @@ test.to_parquet(
 
 # -------------------- Create Multi-Class Tabular Dataset -------------------- #
 
-train_images = "/Users/andrematte/Data/nesa-dataset/train/images/"
-train_labels = "/Users/andrematte/Data/nesa-dataset/train/mask_multiclass"
+train_images = "../data/train/images/"
+train_labels = "../data/train/mask_multiclass"
 
 train = create_dataset(train_images, train_labels)
 
@@ -44,8 +44,8 @@ train.to_parquet(
     index=False,
 )
 
-val_images = "/Users/andrematte/Data/nesa-dataset/val/images/"
-val_labels = "/Users/andrematte/Data/nesa-dataset/val/mask_multiclass/"
+val_images = "../data/val/images/"
+val_labels = "../data/val/mask_multiclass/"
 
 val = create_dataset(val_images, val_labels)
 
@@ -54,8 +54,8 @@ val.to_parquet(
     index=False,
 )
 
-test_images = "/Users/andrematte/Data/nesa-dataset/test/images/"
-test_labels = "/Users/andrematte/Data/nesa-dataset/test/mask_multiclass"
+test_images = "../data/test/images/"
+test_labels = "../data/test/mask_multiclass"
 
 test = create_dataset(test_images, test_labels)
 
