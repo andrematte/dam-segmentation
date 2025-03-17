@@ -15,8 +15,8 @@ from dam_segmentation.utils import logger_setup
 
 logger = logger_setup(to_file=False)
 
-train_path = "../../../data/train_data_binary_downsampled.parquet"
-test_path = "../../../data/test_data_binary.parquet"
+train_path = "../../../data/dam-segmentation/train_data_binary_downsampled.parquet"
+test_path = "../../../data/dam-segmentation/test_data_binary.parquet"
 
 train_data = pd.read_parquet(train_path)
 test_data = pd.read_parquet(test_path)
