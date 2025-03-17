@@ -5,9 +5,9 @@
 
 import pandas as pd
 
-train = "../data/train_data_multiclass_downsampled.parquet"
-val = "../data/val_data_multiclass.parquet"
-test = "../data/test_data_multiclass.parquet"
+train = "../data/dam-segmentation/train_data_multiclass_downsampled.parquet"
+val = "../data/dam-segmentation/val_data_multiclass.parquet"
+test = "../data/dam-segmentation/test_data_multiclass.parquet"
 
 train = pd.read_parquet(train)
 val = pd.read_parquet(val)
@@ -18,6 +18,6 @@ train.loc[train["label"].isin([2, 3]), "label"] = 0
 val.loc[val["label"].isin([2, 3]), "label"] = 0
 test.loc[test["label"].isin([2, 3]), "label"] = 0
 
-train.to_parquet("../data/train_data_binary_downsampled.parquet", index=False)
-val.to_parquet("../data/val_data_binary.parquet", index=False)
-test.to_parquet("../data/test_data_binary.parquet", index=False)
+train.to_parquet("../data/dam-segmentation/train_data_binary_downsampled.parquet", index=False)
+val.to_parquet("../data/dam-segmentation/val_data_binary.parquet", index=False)
+test.to_parquet("../data/dam-segmentation/test_data_binary.parquet", index=False)

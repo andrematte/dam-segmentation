@@ -2,7 +2,7 @@ import pandas as pd
 from imblearn.over_sampling import ADASYN
 
 # Load the train datasets
-train = pd.read_parquet("../data/train_data_multiclass.parquet")
+train = pd.read_parquet("../data/dam-segmentation/train_data_multiclass.parquet")
 train["label"].value_counts()
 
 # Downsample the majority classes and upsample the minority classes
@@ -32,6 +32,6 @@ print(train["label"].value_counts())
 
 # Save to parquet
 train.to_parquet(
-    "../data/train_data_multiclass_downsampled.parquet",
+    "../data/dam-segmentation/train_data_multiclass_downsampled.parquet",
     index=False,
 )
