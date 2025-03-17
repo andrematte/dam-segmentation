@@ -235,3 +235,4 @@ experiments/binary-segmentation/4-inference/inferences/
 experiments/multiclass-segmentation/4-inference/inferences/
 .python-version
 *.csv
+poetry.lock
