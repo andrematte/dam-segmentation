@@ -45,7 +45,8 @@ git clone https://huggingface.co/datasets/andrematte/dam-segmentation
 2. Execute `scripts/create_tabular_dataset.py` to create the tabular dataset:
 
 ```sh
-python scripts/create_tabular_dataset.py
+cd ../scripts
+python create_tabular_dataset.py
 ```
 
 Tabular data will be stored in the `.parquet` format and split into train and test data.
