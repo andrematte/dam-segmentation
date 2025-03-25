@@ -231,8 +231,8 @@ pyrightconfig.json
 # Generated using ignr.py - github.com/Antrikshy/ignr.py
 
 data/
-experiments/binary-segmentation/4-inference/inferences/
-experiments/multiclass-segmentation/4-inference/inferences/
+experiments/binary-segmentation/4-test-iou/test-results/
+experiments/multiclass-segmentation/4-test-iou/test-results/
 .python-version
 *.csv
 poetry.lock
