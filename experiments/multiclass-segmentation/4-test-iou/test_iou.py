@@ -5,11 +5,16 @@
 from glob import glob
 from pathlib import Path
 
+import cv2
 import joblib
+import numpy as np
 import pandas as pd
+from ms_image_tool.image import Image
+from scipy import ndimage
 from sklearn.metrics import jaccard_score
 
 from dam_segmentation.feature_extraction import Features
+from dam_segmentation.utils import create_directory
 
 # ------------------------- Carregar Imagens e Modelo ------------------------ #
 
@@ -49,6 +54,15 @@ selected_features = [
 ]
 
 
+def majority_filter(mask, kernel_size=3):
+    footprint = np.ones((kernel_size, kernel_size))
+    return ndimage.generic_filter(
+        mask,
+        lambda x: np.bincount(x.astype(int)).argmax(),
+        footprint=footprint,
+    )
+
+
 # ---------------------------- Iterar sobre Images --------------------------- #
 results = []
 for image_path, label_path in zip(test_images, test_labels):
@@ -58,9 +72,18 @@ for image_path, label_path in zip(test_images, test_labels):
     features = features.features[selected_features]
     pred = model.predict(features)
 
+    pred_image = pred.reshape(256, 256)
+    pred_image_smooth = pred_image.copy()
+    pred_image_smooth = majority_filter(pred_image_smooth, kernel_size=5)
+    pred_smooth = pred_image_smooth.flatten()
+
     macro_iou = jaccard_score(label, pred, average="macro")
     micro_iou = jaccard_score(label, pred, average="micro")
     w_iou = jaccard_score(label, pred, average="weighted")
+
+    smoothed_macro_iou = jaccard_score(label, pred_smooth, average="macro")
+    smoothed_micro_iou = jaccard_score(label, pred_smooth, average="micro")
+    smoothed_w_iou = jaccard_score(label, pred_smooth, average="weighted")
 
     results.append(
         {
@@ -69,6 +92,9 @@ for image_path, label_path in zip(test_images, test_labels):
             "macro_iou": macro_iou.round(3),
             "micro_iou": micro_iou.round(3),
             "w_iou": w_iou.round(3),
+            "smoothed_macro_iou": smoothed_macro_iou.round(3),
+            "smoothed_micro_iou": smoothed_micro_iou.round(3),
+            "smoothed_w_iou": smoothed_w_iou.round(3),
         }
     )
 
