@@ -230,7 +230,8 @@ pyrightconfig.json
 
 # Generated using ignr.py - github.com/Antrikshy/ignr.py
 
-data/
+data/*
+data/dam-segmentation/
 experiments/binary-segmentation/4-test-iou/test-results/
 experiments/multiclass-segmentation/4-test-iou/test-results/
 .python-version
